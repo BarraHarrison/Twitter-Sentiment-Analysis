@@ -1,4 +1,7 @@
 # Python Twitter Sentiment Analysis
 
-# pip install textblob
-# pip install tweepy
+from textblob import TextBlob
+import tweepy
+import sys
+
+my_keys = open('twitterkeys.txt', 'r').read().splitlines()
