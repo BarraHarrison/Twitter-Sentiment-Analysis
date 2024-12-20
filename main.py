@@ -19,9 +19,26 @@ bearer_token = my_keys.get(
 # Authenticate with API v2
 client = tweepy.Client(bearer_token=bearer_token)
 
+# Define the sentiment analysis function
+def analyze_sentiment(text):
+    """
+    Analyze the sentiment of the given text using TextBlob.
+    
+    Args:
+        text (str): The text to analyze.
+
+    Returns:
+        dict: A dictionary containing polarity and subjectivity scores.
+    """
+    analysis = TextBlob(text).sentiment
+    return {
+        "polarity": analysis.polarity,
+        "subjectivity": analysis.subjectivity
+    }
+
 # Define search term and max results
-search_term = "stocks lang:en"  # Add language filter in the query
-tweet_amount = 5  # Reduce number of tweets to avoid rate limit
+search_term = "stocks lang:en"  
+tweet_amount = 10  
 
 try:
     # Use search_recent_tweets endpoint
@@ -35,11 +52,11 @@ try:
     if response.data:
         for tweet in response.data:
             # Perform sentiment analysis
-            sentiment_analysis = TextBlob(tweet.text).sentiment
+            sentiment = analyze_sentiment(tweet.text)
             print(f"Author ID: {tweet.author_id}")
             print(f"Tweet: {tweet.text}")
             print(f"Created At: {tweet.created_at}")
-            print(f"Sentiment: Polarity={sentiment_analysis.polarity}, Subjectivity={sentiment_analysis.subjectivity}\n")
+            print(f"Sentiment: Polarity={sentiment['polarity']}, Subjectivity={sentiment['subjectivity']}\n")
     else:
         print("No tweets found.")
 except tweepy.TooManyRequests as e:
